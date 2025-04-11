@@ -1,5 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TradeMarket.Models
 {
@@ -19,6 +21,7 @@ namespace TradeMarket.Models
         [Required]
         public required Category Category { get; set; }
         [Required]
+        [ForeignKey("Id")]
         public required User Seller { get; set; }
 
     }
