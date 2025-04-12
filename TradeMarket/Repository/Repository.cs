@@ -21,28 +21,32 @@ namespace TradeMarket.Repository
             await dbSet.AddAsync(entity);
         }
 
-        public async Task GetByIdAsync(T entity)
+        public async Task<T?> GetByIdAsync(T entity)
         {
-            await dbSet.FindAsync(entity);
+            return await dbSet.FindAsync(entity);
         }
 
-        public async Task GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
-          await dbSet.ToListAsync();
+          return await dbSet.ToListAsync();
         }
 
-        public async Task UpdateAsync(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
           return await Not Implemented;
         }
 
-        public async Task DeleteAsync(T entity)
+        public async Task<T> DeleteAsync(T entity)
        {
-          return await Not Implemented;
+          return await Not I,mplemented;
       }
 
-        public async Task FindAsync(Expression<Func<T, bool>>)
+        public async Task<T> FindAsync(Expression<Func<T, bool>>? predicate = null, bool tracked = true)
         {
+          IQueryable<T> query = dbSet;
+          if(!tracked) query = query.AsNoTracking();
+          if (predicate != null) query = query.Where(predicate);
+           return await query.FirstOrDefaultAsync();
           }
     }
 }
