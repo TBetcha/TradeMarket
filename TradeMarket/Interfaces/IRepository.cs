@@ -6,11 +6,10 @@ namespace TradeMarket.IRepository
     {
         Task CreateAsync(T entity);
         Task<T?> GetByIdAsync(T entity);
-        Task<T> FindAsync(Expression<Func<T, bool>>? predicate = null);
+        Task<T> FindAsync(Expression<Func<T, bool>>? predicate = null, bool tracked = true);
         Task<IEnumerable<T>> GetAllAsync();
-        Task<T> UpdateAsync(T entity);
-        Task<T> DeleteAsync(T entity);
-
+        Task DeleteAsync(T entity);
+ 
     }
 
 }

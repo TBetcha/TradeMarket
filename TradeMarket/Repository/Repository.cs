@@ -16,6 +16,10 @@ namespace TradeMarket.Repository
             dbSet = _context.Set<T>();
         }
 
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
         public async Task CreateAsync(T entity)
         {
             await dbSet.AddAsync(entity);
@@ -28,25 +32,21 @@ namespace TradeMarket.Repository
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-          return await dbSet.ToListAsync();
+            return await dbSet.ToListAsync();
         }
 
-        public async Task<T> UpdateAsync(T entity)
+        public async Task DeleteAsync(T entity)
         {
-          return await Not Implemented;
+            dbSet.Remove(entity);
+            await SaveAsync();
         }
-
-        public async Task<T> DeleteAsync(T entity)
-       {
-          return await Not I,mplemented;
-      }
 
         public async Task<T> FindAsync(Expression<Func<T, bool>>? predicate = null, bool tracked = true)
         {
-          IQueryable<T> query = dbSet;
-          if(!tracked) query = query.AsNoTracking();
-          if (predicate != null) query = query.Where(predicate);
-           return await query.FirstOrDefaultAsync();
-          }
+            IQueryable<T> query = dbSet;
+            if (!tracked) query = query.AsNoTracking();
+            if (predicate != null) query = query.Where(predicate);
+            return await query.FirstOrDefaultAsync();
+        }
     }
 }
