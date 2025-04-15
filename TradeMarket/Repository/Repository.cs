@@ -7,18 +7,18 @@ namespace TradeMarket.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly DbContext _context;
+        private readonly DbContext _db;
         internal DbSet<T> dbSet;
 
-        public Repository(DbContext context)
+        public Repository(DbContext db)
         {
-            _context = context;
-            dbSet = _context.Set<T>();
+            _db = db;
+            dbSet = _db.Set<T>();
         }
 
         public async Task SaveAsync()
         {
-            await _context.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
         public async Task CreateAsync(T entity)
         {

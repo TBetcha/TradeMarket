@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,11 @@ using TradeMarket.Data;
 namespace TradeMarket.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250414111543_AddFieldValidations")]
+    partial class AddFieldValidations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23,7 +26,7 @@ namespace TradeMarket.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("TradeMarket.Models.Dto.Address", b =>
+            modelBuilder.Entity("TradeMarket.Models.Address", b =>
                 {
                     b.Property<Guid>("AddressId")
                         .ValueGeneratedOnAdd()
@@ -64,7 +67,7 @@ namespace TradeMarket.Migrations
                     b.ToTable("Address");
                 });
 
-            modelBuilder.Entity("TradeMarket.Models.Dto.Product", b =>
+            modelBuilder.Entity("TradeMarket.Models.Product", b =>
                 {
                     b.Property<Guid>("ProductId")
                         .ValueGeneratedOnAdd()
@@ -111,7 +114,7 @@ namespace TradeMarket.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("TradeMarket.Models.Dto.RequestedProduct", b =>
+            modelBuilder.Entity("TradeMarket.Models.RequestedProduct", b =>
                 {
                     b.Property<Guid>("RequestedProductId")
                         .ValueGeneratedOnAdd()
@@ -154,7 +157,7 @@ namespace TradeMarket.Migrations
                     b.ToTable("RequestedProduct");
                 });
 
-            modelBuilder.Entity("TradeMarket.Models.Dto.User", b =>
+            modelBuilder.Entity("TradeMarket.Models.User", b =>
                 {
                     b.Property<Guid>("UserId")
                         .ValueGeneratedOnAdd()
@@ -196,13 +199,13 @@ namespace TradeMarket.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("TradeMarket.Models.Dto.Product", b =>
+            modelBuilder.Entity("TradeMarket.Models.Product", b =>
                 {
-                    b.HasOne("TradeMarket.Models.Dto.RequestedProduct", "AskingFor")
+                    b.HasOne("TradeMarket.Models.RequestedProduct", "AskingFor")
                         .WithMany()
                         .HasForeignKey("RequestedProductId");
 
-                    b.HasOne("TradeMarket.Models.Dto.User", "Seller")
+                    b.HasOne("TradeMarket.Models.User", "Seller")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -213,15 +216,15 @@ namespace TradeMarket.Migrations
                     b.Navigation("Seller");
                 });
 
-            modelBuilder.Entity("TradeMarket.Models.Dto.RequestedProduct", b =>
+            modelBuilder.Entity("TradeMarket.Models.RequestedProduct", b =>
                 {
-                    b.HasOne("TradeMarket.Models.Dto.RequestedProduct", "AskingFor")
+                    b.HasOne("TradeMarket.Models.RequestedProduct", "AskingFor")
                         .WithMany()
                         .HasForeignKey("AskingForRequestedProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TradeMarket.Models.Dto.User", "Seller")
+                    b.HasOne("TradeMarket.Models.User", "Seller")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -232,9 +235,9 @@ namespace TradeMarket.Migrations
                     b.Navigation("Seller");
                 });
 
-            modelBuilder.Entity("TradeMarket.Models.Dto.User", b =>
+            modelBuilder.Entity("TradeMarket.Models.User", b =>
                 {
-                    b.HasOne("TradeMarket.Models.Dto.Address", "Address")
+                    b.HasOne("TradeMarket.Models.Address", "Address")
                         .WithMany()
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)

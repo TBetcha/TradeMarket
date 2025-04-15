@@ -1,4 +1,4 @@
-using TradeMarket.Models;
+using TradeMarket.Models.Dto;
 
 namespace TradeMarket.IRepository
 {

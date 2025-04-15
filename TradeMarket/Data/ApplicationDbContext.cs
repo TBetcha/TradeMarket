@@ -1,4 +1,4 @@
-using TradeMarket.Models;
+using TradeMarket.Models.Dto;
 using Microsoft.EntityFrameworkCore;
 
 namespace TradeMarket.Data;

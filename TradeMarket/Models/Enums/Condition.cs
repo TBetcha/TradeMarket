@@ -1,4 +1,4 @@
-namespace TradeMarket.Models;
+namespace TradeMarket.Models.Dto;
 
 public enum Condition
 {

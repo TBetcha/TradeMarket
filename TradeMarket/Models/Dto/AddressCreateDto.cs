@@ -1,3 +1,4 @@
+
 using NodaTime;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -6,13 +7,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace TradeMarket.Models.Dto
 {
 
-    public class Address
+    public class AddressCreateDto
     {
         public static Instant currentTime = Instant.FromDateTimeUtc(System.DateTime.UtcNow);
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid AddressId { get; set; }
 
         [Required]
         public required string Line1 { get; set; }
@@ -33,8 +31,7 @@ namespace TradeMarket.Models.Dto
 
         [Required]
         public required AddressType Type { get; set; }
-        public Instant LastUpdated { get; set; }
-        public Instant CreatedAt { get; set; } = currentTime;
+        public Instant LastUpdated { get; set; } = currentTime;
 
     }
 
