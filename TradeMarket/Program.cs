@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using TradeMarket.Data;
+using TradeMarket.Mapping;
+using TradeMarket.IRepository;
+using TradeMarket.Repository;
 using Serilog;
 
 //NOTE: make a log level switch
@@ -12,6 +15,7 @@ builder.Logging.AddConsole();
 
 builder.Services.AddSerilog();
 
+builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -19,6 +23,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"), o => o.UseNodaTime())
 );
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

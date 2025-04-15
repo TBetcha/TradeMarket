@@ -13,8 +13,8 @@ using TradeMarket.Data;
 namespace TradeMarket.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250414120010_MakeRequired")]
-    partial class MakeRequired
+    [Migration("20250415215550_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

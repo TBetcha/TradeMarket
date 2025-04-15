@@ -7,8 +7,8 @@ namespace TradeMarket.Mapping
         public MappingConfig()
         {
             CreateMap<UserCreateDto, User>();
-            CreateMap<User, UserCreateDto>();
-            CreateMap<Address, AddressCreateDto>();
+            CreateMap<User, UserCreateDto>().ReverseMap();
+            CreateMap<Address, AddressCreateDto>().ReverseMap();
             CreateMap<AddressCreateDto, Address>();
         }
     }

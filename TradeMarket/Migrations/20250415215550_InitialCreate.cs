@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using NodaTime;
 
 #nullable disable
 
@@ -16,38 +16,43 @@ namespace TradeMarket.Migrations
                 name: "Address",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AddressId = table.Column<Guid>(type: "uuid", nullable: false),
                     Line1 = table.Column<string>(type: "text", nullable: false),
                     Line2 = table.Column<string>(type: "text", nullable: true),
                     City = table.Column<string>(type: "text", nullable: false),
-                    State = table.Column<string>(type: "text", nullable: false),
-                    PostalCode = table.Column<string>(type: "text", nullable: false),
-                    Type = table.Column<int>(type: "integer", nullable: false)
+                    State = table.Column<string>(type: "character varying(2)", maxLength: 2, nullable: false),
+                    PostalCode = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    LastUpdated = table.Column<Instant>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<Instant>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Address", x => x.Id);
+                    table.PrimaryKey("PK_Address", x => x.AddressId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
+                    Password = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
                     DateOfBirth = table.Column<string>(type: "text", nullable: false),
-                    AddressId = table.Column<int>(type: "integer", nullable: false)
+                    AddressId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastUpdated = table.Column<Instant>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<Instant>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.UserId);
                     table.ForeignKey(
                         name: "FK_Users_Address_AddressId",
                         column: x => x.AddressId,
                         principalTable: "Address",
-                        principalColumn: "Id",
+                        principalColumn: "AddressId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -55,29 +60,31 @@ namespace TradeMarket.Migrations
                 name: "RequestedProduct",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    AskingForId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RequestedProductId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AskingForRequestedProductId = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     Type = table.Column<string>(type: "text", nullable: true),
                     Condition = table.Column<int>(type: "integer", nullable: false),
                     Category = table.Column<int>(type: "integer", nullable: false),
-                    SellerId = table.Column<Guid>(type: "uuid", nullable: false)
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastUpdated = table.Column<Instant>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<Instant>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RequestedProduct", x => x.Id);
+                    table.PrimaryKey("PK_RequestedProduct", x => x.RequestedProductId);
                     table.ForeignKey(
-                        name: "FK_RequestedProduct_RequestedProduct_AskingForId",
-                        column: x => x.AskingForId,
+                        name: "FK_RequestedProduct_RequestedProduct_AskingForRequestedProduct~",
+                        column: x => x.AskingForRequestedProductId,
                         principalTable: "RequestedProduct",
-                        principalColumn: "Id",
+                        principalColumn: "RequestedProductId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RequestedProduct_Users_SellerId",
-                        column: x => x.SellerId,
+                        name: "FK_RequestedProduct_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -85,51 +92,53 @@ namespace TradeMarket.Migrations
                 name: "Products",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    AskingForId = table.Column<Guid>(type: "uuid", nullable: true),
+                    ProductId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RequestedProductId = table.Column<Guid>(type: "uuid", nullable: true),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     Type = table.Column<string>(type: "text", nullable: false),
                     Condition = table.Column<int>(type: "integer", nullable: false),
                     Category = table.Column<int>(type: "integer", nullable: false),
-                    SellerId = table.Column<Guid>(type: "uuid", nullable: false)
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastUpdated = table.Column<Instant>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<Instant>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.PrimaryKey("PK_Products", x => x.ProductId);
                     table.ForeignKey(
-                        name: "FK_Products_RequestedProduct_AskingForId",
-                        column: x => x.AskingForId,
+                        name: "FK_Products_RequestedProduct_RequestedProductId",
+                        column: x => x.RequestedProductId,
                         principalTable: "RequestedProduct",
-                        principalColumn: "Id");
+                        principalColumn: "RequestedProductId");
                     table.ForeignKey(
-                        name: "FK_Products_Users_SellerId",
-                        column: x => x.SellerId,
+                        name: "FK_Products_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_AskingForId",
+                name: "IX_Products_RequestedProductId",
                 table: "Products",
-                column: "AskingForId");
+                column: "RequestedProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_SellerId",
+                name: "IX_Products_UserId",
                 table: "Products",
-                column: "SellerId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RequestedProduct_AskingForId",
+                name: "IX_RequestedProduct_AskingForRequestedProductId",
                 table: "RequestedProduct",
-                column: "AskingForId");
+                column: "AskingForRequestedProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RequestedProduct_SellerId",
+                name: "IX_RequestedProduct_UserId",
                 table: "RequestedProduct",
-                column: "SellerId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_AddressId",
