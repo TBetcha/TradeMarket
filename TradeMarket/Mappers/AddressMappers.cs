@@ -6,7 +6,7 @@ namespace TradeMarket.Mappers
     public static class AddressMappers
     {
         public static Instant currentTime = Instant.FromDateTimeUtc(System.DateTime.UtcNow);
-        public static Address ToAddressFromAddressCreateDto(this AddressCreateDto addressCreate)
+        public static Address ToAddressFromAddressCreateDto(this AddressCreateDto addressCreate, Guid userId)
         {
             return new Address
             {
@@ -16,7 +16,8 @@ namespace TradeMarket.Mappers
                 State = addressCreate.State,
                 PostalCode = addressCreate.PostalCode,
                 Type = addressCreate.Type,
-                LastUpdated = Address.currentTime
+                LastUpdated = Address.currentTime,
+                UserId = userId
             };
         }
     }

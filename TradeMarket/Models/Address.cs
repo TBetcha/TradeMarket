@@ -31,6 +31,11 @@ namespace TradeMarket.Models.Dto
         [MinLength(5)]
         public required string PostalCode { get; set; }
 
+
+        [Required]
+        [ForeignKey("UserId")]
+        public required Guid UserId { get; set; }
+
         [Required]
         public required AddressType Type { get; set; }
         public Instant LastUpdated { get; set; }

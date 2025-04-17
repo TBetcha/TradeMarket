@@ -9,7 +9,7 @@ namespace TradeMarket.Models.Dto
     {
         public static Instant currentTime = Instant.FromDateTimeUtc(System.DateTime.UtcNow);
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        /*[DatabaseGenerated(DatabaseGeneratedOption.Identity)]*/
         [Key]
         public Guid RequestedProductId { get; set; }
 
