@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using TradeMarket.Data;
-using TradeMarket.Mapping;
 using TradeMarket.IRepository;
 using TradeMarket.Repository;
 using Serilog;
@@ -15,7 +14,7 @@ builder.Logging.AddConsole();
 
 builder.Services.AddSerilog();
 
-builder.Services.AddAutoMapper(typeof(MappingConfig));
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

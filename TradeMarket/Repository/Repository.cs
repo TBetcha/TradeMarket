@@ -23,6 +23,7 @@ namespace TradeMarket.Repository
         public async Task CreateAsync(T entity)
         {
             await dbSet.AddAsync(entity);
+            await _db.SaveChangesAsync();
         }
 
         public async Task<T?> GetByIdAsync(T entity)

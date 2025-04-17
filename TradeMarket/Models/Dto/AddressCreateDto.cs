@@ -33,6 +33,14 @@ namespace TradeMarket.Models.Dto
         public required AddressType Type { get; set; }
         public Instant LastUpdated { get; set; } = currentTime;
 
+        public AddressCreateDto(string Line1, string Line2, string City, string State, string PostalCode)
+        {
+          this.Line1 = Line1;
+          this.Line2 = Line2;
+          this.City = City;
+          this.State = State;
+          this.PostalCode = PostalCode;
+        }
     }
 
 
