@@ -4,6 +4,8 @@ using TradeMarket.Data;
 using TradeMarket.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace TradeMarket.Controllers
 {
@@ -16,11 +18,12 @@ namespace TradeMarket.Controllers
         private readonly ILogger _logger;
         private readonly ApiResponse _response;
 
-        public UserController(ILogger<UserController> logger, IUserRepository userRepo)
+        public UserController(ILogger<UserController> logger, IUserRepository userRepo, ApplicationDbContext db)
         {
             _logger = logger;
             _userRepo = userRepo;
             _response = new ApiResponse();
+            _db = db;
         }
 
         [HttpPost]
@@ -45,7 +48,7 @@ namespace TradeMarket.Controllers
                 _response.StatusCode = HttpStatusCode.BadRequest;
 
             }
-            var user = UserMappers.ToUserFromUserCreateDto(createDto);
+            var user = UserMappers.ToUserFromUserCreateDto (createDto);
             await _userRepo.CreateAsync(user);
 
             _response.Result = user;
@@ -53,6 +56,19 @@ namespace TradeMarket.Controllers
             _response.IsSuccess = true;
             return _response;
 
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<ApiResponse>> GetAllUsers()
+        {
+          var userList = await _userRepo.GetAllAsync();
+
+        _logger.LogInformation("times: {x} & {y}", userList.First().CreatedAt,  userList.First().LastUpdated);
+
+          _response.Result = userList;
+          _response.StatusCode = HttpStatusCode.OK;
+          _response.IsSuccess =true;
+          return _response;
         }
     }
 }

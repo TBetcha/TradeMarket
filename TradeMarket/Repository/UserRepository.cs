@@ -1,6 +1,8 @@
 using TradeMarket.Models.Dto;
 using TradeMarket.Data;
 using TradeMarket.IRepository;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using NodaTime;
 
 namespace TradeMarket.Repository
@@ -22,6 +24,16 @@ namespace TradeMarket.Repository
             _db.Users.Update(entity);
             await _db.SaveChangesAsync();
             return entity;
+        }
+
+        public override async Task<IEnumerable<User>> GetAllAsync()
+        {
+          
+          var joinUserAndAddress = await _db.Users
+              .Include(user => user.Address)
+              .ToListAsync();
+
+          return joinUserAndAddress;
         }
 
     }
