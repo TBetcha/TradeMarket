@@ -31,7 +31,7 @@ namespace TradeMarket.Repository
             return await dbSet.FindAsync(entity);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             return await dbSet.ToListAsync();
         }
