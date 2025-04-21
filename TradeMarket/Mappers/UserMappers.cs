@@ -14,7 +14,7 @@ namespace TradeMarket.Mappers
                 UserId = UserId,
                 FirstName = userCreate.FirstName,
                 LastName = userCreate.LastName,
-                Password = userCreate.Password,
+                Password = Utilities.Utils.HashUserPassword(userCreate.Password),
                 Email = userCreate.Email,
                 DateOfBirth = userCreate.DateOfBirth,
                 Address = AddressMappers.ToAddressFromAddressCreateDto(userCreate.Address, UserId),
