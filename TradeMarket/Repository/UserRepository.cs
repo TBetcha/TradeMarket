@@ -36,5 +36,18 @@ namespace TradeMarket.Repository
           return joinUserAndAddress;
         }
 
+        public override async Task<User> GetByIdAsync(Guid id)
+        {
+          var user = await _db.Users
+              .Include(user => user.Address)
+              .FirstOrDefaultAsync(u => u.UserId == id);
+          if (user == null)
+          {
+              _logger.LogError($"User with id {id} not found");
+              return null;
+          }
+          return user;
+        }
+
     }
 } 
