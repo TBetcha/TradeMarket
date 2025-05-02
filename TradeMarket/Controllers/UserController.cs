@@ -70,5 +70,16 @@ namespace TradeMarket.Controllers
           _response.IsSuccess =true;
           return _response;
         }
+
+        [HttpGet("{id:guid}", Name="GetUserById")]
+        public async Task<ActionResult<ApiResponse>> GetUserById([FromRoute] Guid id)
+        {
+          var singleUser = await _userRepo.FindAsync(u => u.UserId == id);
+          _response.Result = singleUser;
+          _response.StatusCode = HttpStatusCode.OK;
+          _response.IsSuccess =true;
+          return _response;
+        }
+
     }
 }
