@@ -9,9 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TradeMarket.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UserController
+    [Route("api/user")]
+    public class UserController: ControllerBase
     {
         private readonly ApplicationDbContext _db;
         private readonly IUserRepository _userRepo;
