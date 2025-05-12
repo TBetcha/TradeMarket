@@ -16,6 +16,6 @@ namespace TradeMarket.Models.Dto
         public required string Email { get; set; }
         public required string DateOfBirth { get; set; }
         public required AddressCreateDto Address { get; set; }
-        public required Instant LastUpdated { get; set; } = currentTime;
+        /*public required Instant LastUpdated { get; set; } = currentTime;*/
     }
 }

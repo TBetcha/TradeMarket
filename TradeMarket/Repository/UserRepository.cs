@@ -28,7 +28,6 @@ namespace TradeMarket.Repository
 
         public override async Task<IEnumerable<User>> GetAllAsync()
         {
-          
           var joinUserAndAddress = await _db.Users
               .Include(user => user.Address)
               .ToListAsync();

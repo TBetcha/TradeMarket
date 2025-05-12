@@ -3,17 +3,23 @@ using TradeMarket.Data;
 using TradeMarket.IRepository;
 using TradeMarket.Repository;
 using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
 using System.Text.Json.Serialization;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 //
-//NOTE: make a log level switch
-Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console()
-    .WriteTo.File("logs/trademarket.txt", rollingInterval: RollingInterval.Day)
-    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
+//NOTE: make a log level switch
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)  // From appsettings.json
+    .Enrich.FromLogContext()
+    .WriteTo.Console(theme : Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme.Code)
+    .WriteTo.File("logs/trademarket.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 builder.Logging.AddConsole();
 builder.Services.AddSerilog();
 builder.Services.AddControllers().AddJsonOptions(opts =>

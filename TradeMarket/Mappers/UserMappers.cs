@@ -18,7 +18,22 @@ namespace TradeMarket.Mappers
                 Email = userCreate.Email,
                 DateOfBirth = userCreate.DateOfBirth,
                 Address = AddressMappers.ToAddressFromAddressCreateDto(userCreate.Address, UserId),
-                LastUpdated = User.currentTime
+                LastUpdated = currentTime
+            };
+        }
+
+        public static UserDto ToUserDto(this User userModel)
+        {
+            return new UserDto
+            {
+                UserId = userModel.UserId,
+                FirstName = userModel.FirstName,
+                LastName = userModel.LastName,
+                Email = userModel.Email,
+                DateOfBirth = userModel.DateOfBirth,
+                Address = AddressMappers.ToAddressDto(userModel.Address),
+                LastUpdated = userModel.LastUpdated
+
             };
         }
 
