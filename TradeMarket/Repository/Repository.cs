@@ -1,7 +1,7 @@
-using TradeMarket.IRepository;
-using TradeMarket.Data;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
+using TradeMarket.Data;
+using TradeMarket.IRepository;
 
 namespace TradeMarket.Repository
 {
@@ -20,6 +20,7 @@ namespace TradeMarket.Repository
         {
             await _db.SaveChangesAsync();
         }
+
         public async Task CreateAsync(T entity)
         {
             await dbSet.AddAsync(entity);
@@ -45,8 +46,10 @@ namespace TradeMarket.Repository
         public async Task<T> FindAsync(Expression<Func<T, bool>>? predicate = null, bool tracked = true)
         {
             IQueryable<T> query = dbSet;
-            if (!tracked) query = query.AsNoTracking();
-            if (predicate != null) query = query.Where(predicate);
+            if (!tracked)
+                query = query.AsNoTracking();
+            if (predicate != null)
+                query = query.Where(predicate);
             return await query.FirstOrDefaultAsync();
         }
     }

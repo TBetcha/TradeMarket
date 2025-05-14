@@ -1,5 +1,5 @@
-using NodaTime;
 using System.ComponentModel.DataAnnotations;
+using NodaTime;
 
 namespace TradeMarket.Models.Dto
 {
@@ -9,8 +9,10 @@ namespace TradeMarket.Models.Dto
 
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
+
         [Required]
         public required string Password { get; set; }
+
         [Required]
         [EmailAddress]
         public required string Email { get; set; }

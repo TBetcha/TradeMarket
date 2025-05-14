@@ -9,7 +9,5 @@ namespace TradeMarket.IRepository
         Task<T> FindAsync(Expression<Func<T, bool>>? predicate = null, bool tracked = true);
         Task<IEnumerable<T>> GetAllAsync();
         Task DeleteAsync(T entity);
- 
     }
-
 }

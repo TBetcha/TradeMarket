@@ -1,11 +1,12 @@
-using TradeMarket.Models.Dto;
 using NodaTime;
+using TradeMarket.Models.Dto;
 
 namespace TradeMarket.Mappers
 {
     public static class AddressMappers
     {
         public static Instant currentTime = Instant.FromDateTimeUtc(System.DateTime.UtcNow);
+
         public static Address ToAddressFromAddressCreateDto(this AddressCreateDto addressCreate, Guid userId)
         {
             return new Address
@@ -17,7 +18,7 @@ namespace TradeMarket.Mappers
                 PostalCode = addressCreate.PostalCode,
                 Type = addressCreate.Type,
                 LastUpdated = currentTime,
-                UserId = userId
+                UserId = userId,
             };
         }
 
@@ -32,9 +33,8 @@ namespace TradeMarket.Mappers
                 State = addressModel.State,
                 PostalCode = addressModel.PostalCode,
                 Type = addressModel.Type,
-                LastUpdated = addressModel.LastUpdated
+                LastUpdated = addressModel.LastUpdated,
             };
-
         }
     }
 }
