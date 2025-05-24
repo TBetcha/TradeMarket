@@ -4,6 +4,9 @@ using TradeMarket.Data;
 using TradeMarket.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using NodaTime;
 
 namespace TradeMarket.Controllers
 {
@@ -32,17 +35,21 @@ namespace TradeMarket.Controllers
         {
             if (await _userRepo.FindAsync(u => u.Email.ToLower() == createDto.Email.ToLower()) != null)
             {
-                _logger.LogError("User already exists");
-                _response.IsSuccess = false;
-                _response.ErrorMessages = new List<string>{"User already exists"};
-                _response.StatusCode = HttpStatusCode.BadRequest;
-                return BadRequest(_response);
+                ModelState.AddModelError(nameof(createDto.Email),
+                    "Email already exists");
+                {
+                    _logger.LogError(ModelState.ToString());
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages = new List<string> { ModelState.ToString() };
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    return BadRequest(_response);
+                }
             }
 
             if (createDto == null)
             {
                 _response.IsSuccess = false;
-                _response.ErrorMessages = new List<string>{"Problem with input, please try again."};
+                _response.ErrorMessages = new List<string> { "Problem with input, please try again." };
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 return BadRequest(_response);
 
@@ -83,7 +90,7 @@ namespace TradeMarket.Controllers
             {
                 _logger.LogError("User not found with id {x}", id);
                 _response.IsSuccess = false;
-                _response.ErrorMessages = new List<string> {"Invalid User Id"};
+                _response.ErrorMessages = new List<string> { "Invalid User Id" };
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 return BadRequest(_response);
             }
@@ -117,5 +124,74 @@ namespace TradeMarket.Controllers
             return _response;
         }
 
+        [HttpPut("{id:guid}", Name = "UpdateUser")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ApiResponse>> UpdateUser([FromRoute] Guid id, [FromBody] UserUpdateDto updateDto)
+        {
+            /*var existingUser = await _userRepo.GetByIdAsync(id);*/
+            var existingUser = await _userRepo.FindAsync(x => x.UserId == id, false);
+            if (existingUser == null)
+            {
+
+                _logger.LogError("User does not exist: {id}", id);
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string> { "Invalid User Id" };
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                return BadRequest(_response);
+            }
+
+            //HACK: Need to come up with a real way to only patch certain properties 
+            var updatedUser = new User
+            {
+                UserId = id,
+                FirstName = updateDto.FirstName != null ? updateDto.FirstName : existingUser.FirstName,
+                LastName = updateDto.LastName != null ? updateDto.LastName : existingUser.LastName,
+                Email = existingUser.Email,
+                DateOfBirth = updateDto.DateOfBirth != null ? updateDto.DateOfBirth : existingUser.DateOfBirth,
+                Address = existingUser.Address,
+                Password = existingUser.Password,
+                CreatedAt = existingUser.CreatedAt,
+                LastUpdated = Instant.FromDateTimeUtc(System.DateTime.UtcNow)
+            };
+            await _userRepo.UpdateUserAsync(updatedUser);
+
+            _response.Result = updatedUser;
+            _response.IsSuccess = true;
+            _response.StatusCode = HttpStatusCode.OK;
+            return _response;
+
+        }
+
+        [HttpPost("login", Name = "UserLogin")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ApiResponse>> UserLogin([FromBody] UserLoginDto loginDto)
+        {
+
+            var user = await _userRepo.FindAsync(u => u.Email.ToLower() == loginDto.Email.ToLower());
+
+            if (user == null)
+            {
+                ModelState.AddModelError(nameof(loginDto.Email),
+                    "Incorrect password please try again.");
+
+                {
+                    _logger.LogError(ModelState.ToString());
+                    _response.Result = false;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages = new List<string> { ModelState.ToString() };
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    return BadRequest(_response);
+                }
+            }
+
+            _response.Result = Utilities.Utils.VerifyUserPassword(loginDto.Password, user.Password);
+            _response.IsSuccess = true;
+            _response.StatusCode = HttpStatusCode.OK;
+            return Ok(_response);
+        }
     }
 }

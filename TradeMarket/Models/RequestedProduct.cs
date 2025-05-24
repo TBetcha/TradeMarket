@@ -27,12 +27,10 @@ namespace TradeMarket.Models.Dto
         [Required]
         public Category Category { get; set; }
 
-
         [Required]
         [ForeignKey("UserId")]
         public required User Seller { get; set; }
         public Instant LastUpdated { get; set; }
         public Instant CreatedAt { get; set; } = currentTime;
-
     }
 }

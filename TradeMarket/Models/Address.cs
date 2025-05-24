@@ -1,11 +1,10 @@
-using NodaTime;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using NodaTime;
 
 namespace TradeMarket.Models.Dto
 {
-
     public class Address
     {
         public static Instant currentTime = Instant.FromDateTimeUtc(System.DateTime.UtcNow);
@@ -31,7 +30,6 @@ namespace TradeMarket.Models.Dto
         [MinLength(5)]
         public required string PostalCode { get; set; }
 
-
         [Required]
         [ForeignKey("UserId")]
         public required Guid UserId { get; set; }
@@ -40,8 +38,5 @@ namespace TradeMarket.Models.Dto
         public required AddressType Type { get; set; }
         public Instant LastUpdated { get; set; }
         public Instant CreatedAt { get; set; } = currentTime;
-
     }
-
-
 }

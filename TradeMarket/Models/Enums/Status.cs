@@ -2,8 +2,8 @@ namespace TradeMarket.Models.Dto;
 
 public enum Status
 {
-  Available,
-  Traded,
-  Pending,
-  Archived
+    Available,
+    Traded,
+    Pending,
+    Archived,
 }

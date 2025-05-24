@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using NodaTime;
@@ -22,11 +21,11 @@ namespace TradeMarket.Models.Dto
         public required string LastName { get; set; }
 
         [Required]
-        public required string Password {get;set;}
+        public required string Password { get; set; }
 
         [Required]
         [EmailAddress]
-        public required string Email {get;set;}
+        public required string Email { get; set; }
 
         [Required]
         public required string DateOfBirth { get; set; }
@@ -36,7 +35,7 @@ namespace TradeMarket.Models.Dto
         public required Address Address { get; set; }
 
         [Required]
-        public Instant LastUpdated {get; set;}
-        public Instant CreatedAt {get; set;} = currentTime;
+        public Instant LastUpdated { get; set; }
+        public Instant CreatedAt { get; set; } = currentTime;
     }
 }

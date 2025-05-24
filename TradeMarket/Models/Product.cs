@@ -1,8 +1,8 @@
 using System.ComponentModel;
-using NodaTime;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+using NodaTime;
 
 namespace TradeMarket.Models.Dto
 {

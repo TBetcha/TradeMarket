@@ -1,11 +1,12 @@
-using TradeMarket.Models.Dto;
 using NodaTime;
+using TradeMarket.Models.Dto;
 
 namespace TradeMarket.Mappers
 {
     public static class UserMappers
     {
         public static Instant currentTime = Instant.FromDateTimeUtc(System.DateTime.UtcNow);
+
         public static User ToUserFromUserCreateDto(this UserCreateDto userCreate)
         {
             var UserId = Guid.NewGuid();
@@ -18,7 +19,7 @@ namespace TradeMarket.Mappers
                 Email = userCreate.Email,
                 DateOfBirth = userCreate.DateOfBirth,
                 Address = AddressMappers.ToAddressFromAddressCreateDto(userCreate.Address, UserId),
-                LastUpdated = currentTime
+                LastUpdated = currentTime,
             };
         }
 
@@ -32,10 +33,8 @@ namespace TradeMarket.Mappers
                 Email = userModel.Email,
                 DateOfBirth = userModel.DateOfBirth,
                 Address = AddressMappers.ToAddressDto(userModel.Address),
-                LastUpdated = userModel.LastUpdated
-
+                LastUpdated = userModel.LastUpdated,
             };
         }
-
     }
 }

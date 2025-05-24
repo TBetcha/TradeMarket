@@ -20,16 +20,31 @@ namespace TradeMarket.Migrations
                     Line1 = table.Column<string>(type: "text", nullable: false),
                     Line2 = table.Column<string>(type: "text", nullable: true),
                     City = table.Column<string>(type: "text", nullable: false),
-                    State = table.Column<string>(type: "character varying(2)", maxLength: 2, nullable: false),
-                    PostalCode = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    State = table.Column<string>(
+                        type: "character varying(2)",
+                        maxLength: 2,
+                        nullable: false
+                    ),
+                    PostalCode = table.Column<string>(
+                        type: "character varying(10)",
+                        maxLength: 10,
+                        nullable: false
+                    ),
                     Type = table.Column<int>(type: "integer", nullable: false),
-                    LastUpdated = table.Column<Instant>(type: "timestamp with time zone", nullable: false),
-                    CreatedAt = table.Column<Instant>(type: "timestamp with time zone", nullable: false)
+                    LastUpdated = table.Column<Instant>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    CreatedAt = table.Column<Instant>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Address", x => x.AddressId);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "Users",
@@ -42,8 +57,14 @@ namespace TradeMarket.Migrations
                     Email = table.Column<string>(type: "text", nullable: false),
                     DateOfBirth = table.Column<string>(type: "text", nullable: false),
                     AddressId = table.Column<Guid>(type: "uuid", nullable: false),
-                    LastUpdated = table.Column<Instant>(type: "timestamp with time zone", nullable: false),
-                    CreatedAt = table.Column<Instant>(type: "timestamp with time zone", nullable: false)
+                    LastUpdated = table.Column<Instant>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    CreatedAt = table.Column<Instant>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
                 },
                 constraints: table =>
                 {
@@ -53,8 +74,10 @@ namespace TradeMarket.Migrations
                         column: x => x.AddressId,
                         principalTable: "Address",
                         principalColumn: "AddressId",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "RequestedProduct",
@@ -68,8 +91,14 @@ namespace TradeMarket.Migrations
                     Condition = table.Column<int>(type: "integer", nullable: false),
                     Category = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    LastUpdated = table.Column<Instant>(type: "timestamp with time zone", nullable: false),
-                    CreatedAt = table.Column<Instant>(type: "timestamp with time zone", nullable: false)
+                    LastUpdated = table.Column<Instant>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    CreatedAt = table.Column<Instant>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
                 },
                 constraints: table =>
                 {
@@ -79,14 +108,17 @@ namespace TradeMarket.Migrations
                         column: x => x.AskingForRequestedProductId,
                         principalTable: "RequestedProduct",
                         principalColumn: "RequestedProductId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Cascade
+                    );
                     table.ForeignKey(
                         name: "FK_RequestedProduct_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "Products",
@@ -101,8 +133,14 @@ namespace TradeMarket.Migrations
                     Condition = table.Column<int>(type: "integer", nullable: false),
                     Category = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    LastUpdated = table.Column<Instant>(type: "timestamp with time zone", nullable: false),
-                    CreatedAt = table.Column<Instant>(type: "timestamp with time zone", nullable: false)
+                    LastUpdated = table.Column<Instant>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    CreatedAt = table.Column<Instant>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
                 },
                 constraints: table =>
                 {
@@ -111,55 +149,59 @@ namespace TradeMarket.Migrations
                         name: "FK_Products_RequestedProduct_RequestedProductId",
                         column: x => x.RequestedProductId,
                         principalTable: "RequestedProduct",
-                        principalColumn: "RequestedProductId");
+                        principalColumn: "RequestedProductId"
+                    );
                     table.ForeignKey(
                         name: "FK_Products_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_RequestedProductId",
                 table: "Products",
-                column: "RequestedProductId");
+                column: "RequestedProductId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_UserId",
                 table: "Products",
-                column: "UserId");
+                column: "UserId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_RequestedProduct_AskingForRequestedProductId",
                 table: "RequestedProduct",
-                column: "AskingForRequestedProductId");
+                column: "AskingForRequestedProductId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_RequestedProduct_UserId",
                 table: "RequestedProduct",
-                column: "UserId");
+                column: "UserId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_AddressId",
                 table: "Users",
-                column: "AddressId");
+                column: "AddressId"
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Products");
+            migrationBuilder.DropTable(name: "Products");
 
-            migrationBuilder.DropTable(
-                name: "RequestedProduct");
+            migrationBuilder.DropTable(name: "RequestedProduct");
 
-            migrationBuilder.DropTable(
-                name: "Users");
+            migrationBuilder.DropTable(name: "Users");
 
-            migrationBuilder.DropTable(
-                name: "Address");
+            migrationBuilder.DropTable(name: "Address");
         }
     }
 }
