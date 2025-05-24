@@ -32,7 +32,7 @@ namespace TradeMarket.Repository
             return joinUserAndAddress;
         }
 
-        public override async Task<User> GetByIdAsync(Guid id)
+        public override async Task<User?> GetByIdAsync(Guid id)
         {
             var user = await _db
                 .Users.Include(user => user.Address)
@@ -44,5 +44,6 @@ namespace TradeMarket.Repository
             }
             return user;
         }
+
     }
 }

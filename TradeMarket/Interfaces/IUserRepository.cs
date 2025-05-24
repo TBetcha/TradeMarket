@@ -6,4 +6,4 @@ namespace TradeMarket.IRepository
     {
         Task<User> UpdateUserAsync(User entity);
     }
-}
+} 
