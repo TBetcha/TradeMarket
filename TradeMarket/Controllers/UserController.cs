@@ -1,11 +1,10 @@
 using TradeMarket.IRepository;
+using Dumpify;
 using TradeMarket.Models.Dto;
 using TradeMarket.Data;
 using TradeMarket.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using NodaTime;
 
 namespace TradeMarket.Controllers
@@ -33,6 +32,8 @@ namespace TradeMarket.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ApiResponse>> CreateUser([FromBody] UserCreateDto createDto)
         {
+            /*_logger.LogInformation(createDto);*/
+            createDto.Dump();
             if (await _userRepo.FindAsync(u => u.Email.ToLower() == createDto.Email.ToLower()) != null)
             {
                 ModelState.AddModelError(nameof(createDto.Email),
