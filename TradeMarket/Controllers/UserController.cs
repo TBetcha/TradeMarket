@@ -1,6 +1,7 @@
 using TradeMarket.IRepository;
 using Dumpify;
 using TradeMarket.Models.Dto;
+using TradeMarket.Models;
 using TradeMarket.Data;
 using TradeMarket.Mappers;
 using Microsoft.AspNetCore.Mvc;
