@@ -32,8 +32,6 @@ namespace TradeMarket.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ApiResponse>> CreateUser([FromBody] UserCreateDto createDto)
         {
-            /*_logger.LogInformation(createDto);*/
-            createDto.Dump();
             if (await _userRepo.FindAsync(u => u.Email.ToLower() == createDto.Email.ToLower()) != null)
             {
                 ModelState.AddModelError(nameof(createDto.Email),
