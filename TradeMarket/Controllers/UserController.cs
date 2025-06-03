@@ -163,35 +163,5 @@ namespace TradeMarket.Controllers
             return _response;
 
         }
-
-        [HttpPost("login", Name = "UserLogin")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ApiResponse>> UserLogin([FromBody] UserLoginDto loginDto)
-        {
-
-            var user = await _userRepo.FindAsync(u => u.Email.ToLower() == loginDto.Email.ToLower());
-
-            if (user == null)
-            {
-                ModelState.AddModelError(nameof(loginDto.Email),
-                    "Incorrect password please try again.");
-
-                {
-                    _logger.LogError(ModelState.ToString());
-                    _response.Result = false;
-                    _response.IsSuccess = false;
-                    _response.ErrorMessages = new List<string> { ModelState.ToString() };
-                    _response.StatusCode = HttpStatusCode.BadRequest;
-                    return BadRequest(_response);
-                }
-            }
-
-            _response.Result = Utilities.Utils.VerifyUserPassword(loginDto.Password, user.Password);
-            _response.IsSuccess = true;
-            _response.StatusCode = HttpStatusCode.OK;
-            return Ok(_response);
-        }
     }
 }

@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace TradeMarket.Models.Dto
+namespace TradeMarket.Models
 {
     public class ApiResponse
     {
