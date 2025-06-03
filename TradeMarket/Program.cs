@@ -7,17 +7,24 @@ using Serilog.Sinks.SystemConsole.Themes;
 using TradeMarket.Data;
 using TradeMarket.IRepository;
 using TradeMarket.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
-//
 
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 
-//NOTE: make a log level switch
+//NOTE: make a log level switch and move this somewhere
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration) // From appsettings.json
     .Enrich.FromLogContext()
-    .WriteTo.Console(theme: Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme.Code)
-    .WriteTo.File("logs/trademarket.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.Console(Serilog.Events.LogEventLevel.Information,
+        "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level}] {Message}{NewLine}{Exception}",
+        theme: Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme.Code)
+    .WriteTo.File("logs/trademarket.txt", Serilog.Events.LogEventLevel.Information,
+        "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level}] {Message}{NewLine}{Exception}",
+        rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
 builder.Host.UseSerilog();
@@ -29,6 +36,24 @@ builder.Services.AddControllers()
         opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         opts.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
     });
+
+var secretKey = config["JwtSettings:SecretKey"];
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+  .AddJwtBearer(options =>
+      {
+          options.TokenValidationParameters = new TokenValidationParameters
+          {
+              ValidateIssuer = true,
+              ValidateAudience = true,
+              ValidateLifetime = true,
+              ValidateIssuerSigningKey = true,
+              ValidIssuer = builder.Configuration["Jwt:Issuer"],
+              ValidAudience = builder.Configuration["Jwt:Audience"],
+              RoleClaimType = "role",
+              IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+          };
+      });
+builder.Services.AddAuthorization();
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
