@@ -55,7 +55,7 @@ namespace TradeMarket.Controllers
 
             }
             var user = UserMappers.ToUserFromUserCreateDto(createDto!);
-            await _userRepo.CreateAsync(user);
+            await _userRepo.CreateAsync(user, cancellationToken);
 
             _response.Result = user;
             _response.StatusCode = HttpStatusCode.Created;
@@ -69,7 +69,7 @@ namespace TradeMarket.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ApiResponse>> GetAllUsers(CancellationToken cancellationToken)
         {
-            var userList = await _userRepo.GetAllAsync();
+            var userList = await _userRepo.GetAllAsync(cancellationToken);
             var userDtoList = userList.Select(user => UserMappers.ToUserDto(user));
 
             _response.Result = userDtoList;
@@ -85,7 +85,7 @@ namespace TradeMarket.Controllers
         public async Task<ActionResult<ApiResponse>> GetUserById([FromRoute] Guid id, CancellationToken cancellationToken)
         {
 
-            var user = await _userRepo.GetByIdAsync(id);
+            var user = await _userRepo.GetByIdAsync(id, cancellationToken);
             if (user == null)
             {
                 _logger.LogError("User not found with id {x}", id);
@@ -107,7 +107,7 @@ namespace TradeMarket.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ApiResponse>> DeleteUser([FromRoute] Guid id, CancellationToken cancellationToken)
         {
-            var user = await _userRepo.GetByIdAsync(id);
+            var user = await _userRepo.GetByIdAsync(id, cancellationToken);
             if (user == null)
             {
                 _logger.LogError("Couldn't delete. User not found with id {x}", id);
@@ -117,7 +117,7 @@ namespace TradeMarket.Controllers
                 return BadRequest(_response);
             }
 
-            await _userRepo.DeleteAsync(user);
+            await _userRepo.DeleteAsync(user, cancellationToken);
 
             _response.IsSuccess = true;
             _response.StatusCode = HttpStatusCode.NoContent;
