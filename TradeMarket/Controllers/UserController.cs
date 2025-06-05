@@ -31,7 +31,7 @@ namespace TradeMarket.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ApiResponse>> CreateUser([FromBody] UserCreateDto createDto)
+        public async Task<ActionResult<ApiResponse>> CreateUser([FromBody] UserCreateDto createDto, CancellationToken cancellationToken)
         {
             if (await _userRepo.FindAsync(u => u.Email.ToLower() == createDto.Email.ToLower()) != null)
             {
@@ -67,7 +67,7 @@ namespace TradeMarket.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ApiResponse>> GetAllUsers()
+        public async Task<ActionResult<ApiResponse>> GetAllUsers(CancellationToken cancellationToken)
         {
             var userList = await _userRepo.GetAllAsync();
             var userDtoList = userList.Select(user => UserMappers.ToUserDto(user));
@@ -82,7 +82,7 @@ namespace TradeMarket.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ApiResponse>> GetUserById([FromRoute] Guid id)
+        public async Task<ActionResult<ApiResponse>> GetUserById([FromRoute] Guid id, CancellationToken cancellationToken)
         {
 
             var user = await _userRepo.GetByIdAsync(id);
@@ -105,7 +105,7 @@ namespace TradeMarket.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ApiResponse>> DeleteUser([FromRoute] Guid id)
+        public async Task<ActionResult<ApiResponse>> DeleteUser([FromRoute] Guid id, CancellationToken cancellationToken)
         {
             var user = await _userRepo.GetByIdAsync(id);
             if (user == null)
@@ -128,7 +128,7 @@ namespace TradeMarket.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ApiResponse>> UpdateUser([FromRoute] Guid id, [FromBody] UserUpdateDto updateDto)
+        public async Task<ActionResult<ApiResponse>> UpdateUser([FromRoute] Guid id, [FromBody] UserUpdateDto updateDto, CancellationToken cancellationToken)
         {
             /*var existingUser = await _userRepo.GetByIdAsync(id);*/
             var existingUser = await _userRepo.FindAsync(x => x.UserId == id, false);

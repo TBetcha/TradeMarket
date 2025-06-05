@@ -26,13 +26,13 @@ namespace TradeMarket.Repository
             return entity;
         }
 
-        public override async Task<IEnumerable<User>> GetAllAsync()
+        public override async Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken)
         {
             var joinUserAndAddress = await _db.Users.Include(user => user.Address).ToListAsync();
             return joinUserAndAddress;
         }
 
-        public override async Task<User?> GetByIdAsync(Guid id)
+        public override async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var user = await _db
                 .Users.Include(user => user.Address)
