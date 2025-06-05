@@ -33,7 +33,7 @@ namespace TradeMarket.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ApiResponse>> UserLogin([FromBody] UserLoginDto loginDto)
+        public async Task<ActionResult<ApiResponse>> UserLogin([FromBody] UserLoginDto loginDto, CancellationToken cancellationToken)
         {
 
             var user = await _userRepo.FindAsync(u => u.Email.ToLower() == loginDto.Email.ToLower());

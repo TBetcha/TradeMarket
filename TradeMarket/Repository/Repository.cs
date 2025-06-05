@@ -16,31 +16,31 @@ namespace TradeMarket.Repository
             dbSet = _db.Set<T>();
         }
 
-        public async Task SaveAsync()
+        public async Task SaveAsync(CancellationToken cancellationToken = default)
         {
-            await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task CreateAsync(T entity)
+        public async Task CreateAsync(T entity, CancellationToken cancellationToken = default)
         {
-            await dbSet.AddAsync(entity);
-            await _db.SaveChangesAsync();
+            await dbSet.AddAsync(entity, cancellationToken);
+            await _db.SaveChangesAsync(cancellationToken);
         }
 
-        public virtual async Task<T?> GetByIdAsync(Guid id)
+        public virtual async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await dbSet.FindAsync(id);
+            return await dbSet.FindAsync(id, cancellationToken);
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync()
+        public virtual async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            return await dbSet.ToListAsync();
+            return await dbSet.ToListAsync(cancellationToken);
         }
 
-        public async Task DeleteAsync(T entity)
+        public async Task DeleteAsync(T entity, CancellationToken cancellationToken = default)
         {
             dbSet.Remove(entity);
-            await SaveAsync();
+            await SaveAsync(cancellationToken);
         }
 
         public async Task<T> FindAsync(Expression<Func<T, bool>>? predicate = null, bool tracked = true)

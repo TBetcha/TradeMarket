@@ -31,7 +31,7 @@ namespace TradeMarket.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ApiResponse>> CreateUser([FromBody] UserCreateDto createDto)
+        public async Task<ActionResult<ApiResponse>> CreateUser([FromBody] UserCreateDto createDto, CancellationToken cancellationToken)
         {
             if (await _userRepo.FindAsync(u => u.Email.ToLower() == createDto.Email.ToLower()) != null)
             {
@@ -55,7 +55,7 @@ namespace TradeMarket.Controllers
 
             }
             var user = UserMappers.ToUserFromUserCreateDto(createDto!);
-            await _userRepo.CreateAsync(user);
+            await _userRepo.CreateAsync(user, cancellationToken);
 
             _response.Result = user;
             _response.StatusCode = HttpStatusCode.Created;
@@ -67,9 +67,9 @@ namespace TradeMarket.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ApiResponse>> GetAllUsers()
+        public async Task<ActionResult<ApiResponse>> GetAllUsers(CancellationToken cancellationToken)
         {
-            var userList = await _userRepo.GetAllAsync();
+            var userList = await _userRepo.GetAllAsync(cancellationToken);
             var userDtoList = userList.Select(user => UserMappers.ToUserDto(user));
 
             _response.Result = userDtoList;
@@ -82,10 +82,10 @@ namespace TradeMarket.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ApiResponse>> GetUserById([FromRoute] Guid id)
+        public async Task<ActionResult<ApiResponse>> GetUserById([FromRoute] Guid id, CancellationToken cancellationToken)
         {
 
-            var user = await _userRepo.GetByIdAsync(id);
+            var user = await _userRepo.GetByIdAsync(id, cancellationToken);
             if (user == null)
             {
                 _logger.LogError("User not found with id {x}", id);
@@ -105,9 +105,9 @@ namespace TradeMarket.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ApiResponse>> DeleteUser([FromRoute] Guid id)
+        public async Task<ActionResult<ApiResponse>> DeleteUser([FromRoute] Guid id, CancellationToken cancellationToken)
         {
-            var user = await _userRepo.GetByIdAsync(id);
+            var user = await _userRepo.GetByIdAsync(id, cancellationToken);
             if (user == null)
             {
                 _logger.LogError("Couldn't delete. User not found with id {x}", id);
@@ -117,7 +117,7 @@ namespace TradeMarket.Controllers
                 return BadRequest(_response);
             }
 
-            await _userRepo.DeleteAsync(user);
+            await _userRepo.DeleteAsync(user, cancellationToken);
 
             _response.IsSuccess = true;
             _response.StatusCode = HttpStatusCode.NoContent;
@@ -128,7 +128,7 @@ namespace TradeMarket.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ApiResponse>> UpdateUser([FromRoute] Guid id, [FromBody] UserUpdateDto updateDto)
+        public async Task<ActionResult<ApiResponse>> UpdateUser([FromRoute] Guid id, [FromBody] UserUpdateDto updateDto, CancellationToken cancellationToken)
         {
             /*var existingUser = await _userRepo.GetByIdAsync(id);*/
             var existingUser = await _userRepo.FindAsync(x => x.UserId == id, false);
