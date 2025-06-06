@@ -12,7 +12,7 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace TradeMarket.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
         private readonly ILogger _logger;
