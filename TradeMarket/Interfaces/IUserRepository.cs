@@ -4,6 +4,6 @@ namespace TradeMarket.IRepository
 {
     public interface IUserRepository : IRepository<User>
     {
-        Task<User> UpdateUserAsync(User entity);
+        Task<User> UpdateUserAsync(User entity, CancellationToken cancellationToken);
     }
 } 

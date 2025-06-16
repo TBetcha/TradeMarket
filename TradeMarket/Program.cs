@@ -7,6 +7,7 @@ using Serilog.Sinks.SystemConsole.Themes;
 using TradeMarket.Data;
 using TradeMarket.IRepository;
 using TradeMarket.Repository;
+using TradeMarket.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
@@ -77,6 +78,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         .EnableSensitiveDataLogging()
 );
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 
 var app = builder.Build();
 

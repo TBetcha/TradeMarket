@@ -32,7 +32,7 @@ namespace TradeMarket.Repository
             return await dbSet.FindAsync(id, cancellationToken);
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
+        public virtual async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default )
         {
             return await dbSet.ToListAsync(cancellationToken);
         }

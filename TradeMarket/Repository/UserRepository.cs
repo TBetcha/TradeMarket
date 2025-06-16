@@ -18,7 +18,7 @@ namespace TradeMarket.Repository
             _logger = logger;
         }
 
-        public async Task<User> UpdateUserAsync(User entity)
+        public async Task<User> UpdateUserAsync(User entity, CancellationToken cancellationToken)
         {
             var modTime = Instant.FromDateTimeUtc(System.DateTime.UtcNow);
             _db.Users.Update(entity);

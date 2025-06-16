@@ -17,13 +17,15 @@ namespace TradeMarket.Controllers
         private readonly IUserRepository _userRepo;
         private readonly ILogger _logger;
         private readonly ApiResponse _response;
+        private readonly IJwtUtils _jwtUtils;
 
-        public UserController(ILogger<UserController> logger, IUserRepository userRepo, ApplicationDbContext db)
+        public UserController(ILogger<UserController> logger, IUserRepository userRepo, ApplicationDbContext db, IJwtUtils jwtUtils)
         {
             _logger = logger;
             _userRepo = userRepo;
             _response = new ApiResponse();
             _db = db;
+            _jwtUtils = jwtUtils;
         }
 
         [HttpPost]
@@ -57,7 +59,9 @@ namespace TradeMarket.Controllers
             var user = UserMappers.ToUserFromUserCreateDto(createDto!);
             await _userRepo.CreateAsync(user, cancellationToken);
 
-            _response.Result = user;
+            var jwtToken = _jwtUtils.GenerateJwtToken(user.Email, user.UserId.ToString());
+
+            _response.Result = new { user = user, token = jwtToken };
             _response.StatusCode = HttpStatusCode.Created;
             _response.IsSuccess = true;
             return CreatedAtRoute("GetUserById", new { id = user.UserId }, _response);
@@ -130,7 +134,6 @@ namespace TradeMarket.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ApiResponse>> UpdateUser([FromRoute] Guid id, [FromBody] UserUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            /*var existingUser = await _userRepo.GetByIdAsync(id);*/
             var existingUser = await _userRepo.FindAsync(x => x.UserId == id, false);
             if (existingUser == null)
             {
@@ -155,7 +158,7 @@ namespace TradeMarket.Controllers
                 CreatedAt = existingUser.CreatedAt,
                 LastUpdated = Instant.FromDateTimeUtc(System.DateTime.UtcNow)
             };
-            await _userRepo.UpdateUserAsync(updatedUser);
+            await _userRepo.UpdateUserAsync(updatedUser, cancellationToken);
 
             _response.Result = updatedUser;
             _response.IsSuccess = true;

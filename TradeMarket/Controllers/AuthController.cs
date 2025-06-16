@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-/*using Microsoft.IdentityModel.JsonWebTokens;*/
 using TradeMarket.Models;
 using TradeMarket.Models.Dto;
 using TradeMarket.IRepository;
 using System.Net;
 using System.Security.Claims;
-using System.Text.Json.Serialization;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -19,13 +17,15 @@ namespace TradeMarket.Controllers
         private readonly ApiResponse _response;
         private readonly IUserRepository _userRepo;
         private readonly IConfiguration _config;
+        private readonly IJwtUtils _jwtUtils;
 
-        public AuthController(ILogger<AuthController> logger, IConfiguration config, IUserRepository userRepo)
+        public AuthController(ILogger<AuthController> logger, IConfiguration config, IUserRepository userRepo, IJwtUtils jwtUtils)
         {
             _logger = logger;
             _config = config;
             _response = new ApiResponse();
             _userRepo = userRepo;
+            _jwtUtils = jwtUtils;
         }
 
 
@@ -55,7 +55,7 @@ namespace TradeMarket.Controllers
             var pwAttempt = Utilities.Utils.VerifyUserPassword(loginDto.Password, user.Password);
 
             {
-                var loginResult = pwAttempt ? GenerateJwtToken(user.Email, user.UserId.ToString()) : "Unauthorized";
+                var loginResult = pwAttempt ? _jwtUtils.GenerateJwtToken(user.Email, user.UserId.ToString()) : "Unauthorized";
                 _response.Result = loginResult;
                 _response.IsSuccess = true;
                 _response.StatusCode = HttpStatusCode.OK;
@@ -63,31 +63,5 @@ namespace TradeMarket.Controllers
             }
         }
 
-        private string GenerateJwtToken(string email, string userId)
-        {
-            var claims = new[]
-            {
-            new Claim(JwtRegisteredClaimNames.Sub, userId),
-            new Claim(JwtRegisteredClaimNames.Email, email),
-            new Claim("role","Trader"),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-          };
-
-
-            var identity = new ClaimsIdentity(claims);
-
-            var secretKey = _config["JwtSettings:SecretKey"];
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: _config["JwtSettings:Issuer"],
-                audience: _config["JwtSettings:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(120),
-                signingCredentials: creds);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
     }
 }
