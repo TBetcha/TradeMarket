@@ -30,7 +30,7 @@ namespace TradeMarket.Utils
             var identity = new ClaimsIdentity(claims);
 
             var secretKey = _config["JwtSettings:SecretKey"];
-            var key = new SymmetricSecurityKey(Convert.FromBase64String(secretKey));
+            var key = new SymmetricSecurityKey(Convert.FromBase64String(secretKey!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
